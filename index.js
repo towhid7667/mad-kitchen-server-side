@@ -19,6 +19,7 @@ async function run() {
   try {
     const database = client.db("FoodInfo");
     const foods = database.collection("FoodItems");
+    const orders = database.collection("Orders");
 
     app.get("/foods", async (req, res) => {
       const query = {};
@@ -26,6 +27,28 @@ async function run() {
       const result = await cursor.limit(3).toArray();
       res.send(result);
     });
+    app.get("/allfoods", async (req, res) => {
+      const query = {};
+      const cursor = foods.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+    app.post("/allfoods", async (req, res) => {
+      const item = req.body;
+      const result = await foods.insertOne(item);
+      res.send(result);
+    });
+    app.get("/allfoods/:id", async (req, res) => {
+        const id = req.params.id;
+      const query = {_id : ObjectId(id)};
+      const cursor = foods.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+   
+
+
   } finally {
   }
 }

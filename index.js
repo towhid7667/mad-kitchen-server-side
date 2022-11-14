@@ -52,6 +52,12 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result);
     });
+    app.delete("/allfoods/:id", async (req, res) => {
+        const id = req.params.id;
+      const query = {_id : ObjectId(id)};
+      const result = await foods.deleteOne(query);
+      res.send(result);
+    });
 
     app.patch('/allfoods/:id', async(req, res) =>{
       const id = req.params.id;

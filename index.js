@@ -19,7 +19,7 @@ async function run() {
   try {
     const database = client.db("FoodInfo");
     const foods = database.collection("FoodItems");
-    const orders = database.collection("Orders");
+    // const orders = database.collection("Orders");
 
     app.get("/foods", async (req, res) => {
       const query = {};
@@ -45,6 +45,36 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result);
     });
+    app.get("/allfoods/:id", async (req, res) => {
+        const id = req.params.id;
+      const query = {_id : ObjectId(id)};
+      const cursor = foods.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    app.patch('/allfoods/:id', async(req, res) =>{
+      const id = req.params.id;
+      const filter = {_id: ObjectId(id)};
+      const Item = req.body;
+      // console.log(Item)
+      const option = {upsert : true}
+      const updatedItem = {
+          $set : {
+             img : Item.img,
+             title : Item.title,
+              body : Item.body,
+              price : Item.price,
+
+          }
+      }
+      const result = await foods.updateOne(filter, updatedItem, option);
+      res.send(result);
+  })
+
+
+
+  
 
    
 
